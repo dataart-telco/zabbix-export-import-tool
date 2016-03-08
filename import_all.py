@@ -1,5 +1,6 @@
+#!/usr/bin/python 
 
-import pyzabbix, sys, json, os
+import pyzabbix, sys, json, os, time
 
 if len(sys.argv) > 2:
     IMPORT_DIR = sys.argv[1]
@@ -119,31 +120,27 @@ def replaceVars(data, prefix, dic):
     return data
 
 dir = os.path.abspath(IMPORT_DIR)
-
-varGroups = readHostGroupVars()
-varTpls = readTemplatesGroupVars()
-
 for fileName in sorted(os.listdir(IMPORT_DIR)):
     print ""
     print "import {0}".format(fileName)
     print "-----"
     f = os.path.join(dir, fileName)
     data = readFile(f)
+    time.sleep(1)
     basename = os.path.basename(f)
     if "action" in basename:
+        varGroups = readHostGroupVars()
+        varTpls = readTemplatesGroupVars()
         data = replaceVars(data, "REPLACE_ME_GROUP_", varGroups)
         data = replaceVars(data, "REPLACE_ME_TPLS_", varTpls)
         importAction(data)
         continue
     if "hostgroup" in basename:
         importHostGroups(data)
-        varGroups = readHostGroupVars()
         continue
     if "template.xml" in  basename:
         importTemplateXml(data)
-        varTpls = readTemplatesGroupVars()
         continue
     if "template" in  basename:
         importTemplate(data)
-        varTpls = readTemplatesGroupVars()
         continue
