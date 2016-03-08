@@ -12,6 +12,8 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 
 zapi.login('admin', 'zabbix')
 
-actions = zapi.template.get(filter={"name": "Restcomm Cluster Template"})
+actions = zapi.template.get(
+    output="extend",
+    filter={"name": "Restcomm Cluster Template"})
 
 print json.dumps(actions)

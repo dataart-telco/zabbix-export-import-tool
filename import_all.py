@@ -1,6 +1,5 @@
 
-from pyzabbix import ZabbixAPI
-import sys, json, os
+import pyzabbix, sys, json, os
 
 if len(sys.argv) > 2:
     IMPORT_DIR = sys.argv[1]
@@ -14,31 +13,32 @@ print "** App iports files in Lexicographical order from '{0}' folder".format(IM
 print "*****"
 print ""
 
-zapi = ZabbixAPI(ZABBIX_SERVER)
+zapi = pyzabbix.ZabbixAPI(ZABBIX_SERVER)
 zapi.login('admin', 'zabbix')
 
-for f in os.listdir(IMPORT_DIR):
-    data = readFile(f)
-    if "action" in f.basename():
-        importAction(data)
-    if "hostgroup" in f.basename():
-        importHostGroups(data)
-    if "template" in  f.basename():
-        importTemplate(data)
-    if "template.xml" in  f.basename():
-        importTemplateXml(data)
-
 def readFile(f):
-    with open('filename', 'r') as f:
+    with open(f, 'r') as f:
         return f.read()
 
-def importAction( data ):
-    zapi.action.create(data)
+def importAction( str ):
+    data = json.loads(str)
+    for action in data:
+        try:
+            print "Create: {0}".format(json.dumps(action))
+            zapi.action.create(action)
+        except pyzabbix.ZabbixAPIException as e:
+            print e
 
-def importHostGroups( data ):
-    zapi.hostgroup.create(data)
+def importHostGroups( str ):
+    data = json.loads(str)
+    for group in data:
+        try:
+            zapi.hostgroup.create({"name": group["name"]})
+        except pyzabbix.ZabbixAPIException as e:
+            print e
 
-def importTemplate( data ):
+def importTemplate( str ):
+    data = json.loads(str)
     zapi.template.create(data)
 
 def importTemplateXml( template ):
@@ -96,3 +96,54 @@ def importTemplateXml( template ):
         },
     }
     zapi.confimport('xml', template, rules)
+
+def readHostGroupVars():
+    vars = {}
+    groups = zapi.hostgroup.get()
+    for g in groups:
+        key = g["name"].upper().replace(" ", "_")
+        vars[key] = g["groupid"]
+    return vars
+
+def readTemplatesGroupVars():
+    vars = {}
+    templates = zapi.template.get()
+    for t in templates:
+        key = t["name"].upper().replace(" ", "_")
+        vars[key] = t["templateid"]
+    return vars
+
+def replaceVars(data, prefix, dic):
+    for key, value in dic.iteritems():
+        data = data.replace("<" + prefix + key + ">", value)
+    return data
+
+dir = os.path.abspath(IMPORT_DIR)
+
+varGroups = readHostGroupVars()
+varTpls = readTemplatesGroupVars()
+
+for fileName in sorted(os.listdir(IMPORT_DIR)):
+    print ""
+    print "import {0}".format(fileName)
+    print "-----"
+    f = os.path.join(dir, fileName)
+    data = readFile(f)
+    basename = os.path.basename(f)
+    if "action" in basename:
+        data = replaceVars(data, "REPLACE_ME_GROUP_", varGroups)
+        data = replaceVars(data, "REPLACE_ME_TPLS_", varTpls)
+        importAction(data)
+        continue
+    if "hostgroup" in basename:
+        importHostGroups(data)
+        varGroups = readHostGroupVars()
+        continue
+    if "template.xml" in  basename:
+        importTemplateXml(data)
+        varTpls = readTemplatesGroupVars()
+        continue
+    if "template" in  basename:
+        importTemplate(data)
+        varTpls = readTemplatesGroupVars()
+        continue

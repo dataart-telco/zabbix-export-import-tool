@@ -12,6 +12,8 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 
 zapi.login('admin', 'zabbix')
 
-actions = zapi.hostgroup.get(filter={"name": "Restcomm Cluster"})
+actions = zapi.hostgroup.get(
+    output="extend",
+    filter={"name": "Restcomm Cluster"})
 
 print json.dumps(actions)
