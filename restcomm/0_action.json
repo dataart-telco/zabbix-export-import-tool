@@ -17,7 +17,7 @@
             "esc_step_from":"1",
             "opgroup":[
                {
-                  "groupid":"<REPLACE_ME_GROUP_RESTCOMM_CLUSTER>",
+                  "groupid":"<REPLACE_ME_GROUP_RESTCOMM_CLUSTER>"
                }
             ]
          },
@@ -29,7 +29,7 @@
             "esc_step_from":"1",
             "optemplate":[
                {
-                  "templateid":"<REPLACE_ME_TPLS_RESTCOMM_CLUSTER_TEMPLATE>",
+                  "templateid":"<REPLACE_ME_TPLS_RESTCOMM_CLUSTER_TEMPLATE>"
                }
             ]
          }
@@ -65,7 +65,7 @@
             "evaltype":"0",
             "opcommand_grp":[
                {
-                  "groupid":"<REPLACE_ME_GROUP_RESTCOMM_CLUSTER>",
+                  "groupid":"<REPLACE_ME_GROUP_RESTCOMM_CLUSTER>"
                }
             ],
             "esc_step_to":"1",
@@ -127,7 +127,7 @@
             "evaltype":"0",
             "opcommand_grp":[
                {
-                  "groupid":"<REPLACE_ME_GROUP_RESTCOMM_CLUSTER>",
+                  "groupid":"<REPLACE_ME_GROUP_RESTCOMM_CLUSTER>"
                }
             ],
             "opconditions":[
@@ -195,7 +195,7 @@
             "evaltype":"0",
             "opcommand_grp":[
                {
-                  "groupid":"<REPLACE_ME_GROUP_RESTCOMM_CLUSTER>",
+                  "groupid":"<REPLACE_ME_GROUP_RESTCOMM_CLUSTER>"
                }
             ],
             "opconditions":[
@@ -263,7 +263,7 @@
             "evaltype":"0",
             "opcommand_grp":[
                {
-                  "groupid":"<REPLACE_ME_GROUP_RESTCOMM_CLUSTER>",
+                  "groupid":"<REPLACE_ME_GROUP_RESTCOMM_CLUSTER>"
                }
             ],
             "opconditions":[
