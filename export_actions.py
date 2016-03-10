@@ -13,7 +13,7 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 zapi.login('admin', 'zabbix')
 
 actions = zapi.action.get(
-    filter={"name":"Restcomm Cluster"},
+#    filter={"name":"Restcomm Cluster"},
     output="extend", 
     selectOperations="extend",
     selectConditions="extend")
